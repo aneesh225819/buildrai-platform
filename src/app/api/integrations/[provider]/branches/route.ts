@@ -65,7 +65,7 @@ export async function GET(
     // Get integration for this user and provider
     const integration = await Integration.findOne({
       userId,
-      provider,
+      provider: provider as 'github' | 'bitbucket' | 'azure',
       isActive: true,
     });
 
