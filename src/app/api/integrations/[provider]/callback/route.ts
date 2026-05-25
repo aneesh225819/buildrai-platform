@@ -137,10 +137,10 @@ export async function GET(
 
     // Store or update integration
     await Integration.findOneAndUpdate(
-      { userId, provider },
+      { userId, provider: provider as 'github' | 'bitbucket' | 'azure' },
       {
         userId,
-        provider,
+        provider: provider as 'github' | 'bitbucket' | 'azure',
         providerUserId: userInfo.id,
         providerUsername: userInfo.login || userInfo.username || userInfo.displayName || 'unknown',
         providerEmail: userInfo.email,
