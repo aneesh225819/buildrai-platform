@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # MongoDB for development
+  mongodb:
+    image: mongo:7.0
+    container_name: buildrai-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: buildrai
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - buildrai-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # BuildRAI Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: buildrai-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Database
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/buildrai?authSource=admin
+
+      # Application
+      NODE_ENV: production
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+      # Clerk (use your actual keys)
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+
+      # Anthropic
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+
+      # OAuth
+      TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+      BITBUCKET_CLIENT_ID: ${BITBUCKET_CLIENT_ID:-}
+      BITBUCKET_CLIENT_SECRET: ${BITBUCKET_CLIENT_SECRET:-}
+      AZURE_CLIENT_ID: ${AZURE_CLIENT_ID:-}
+      AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET:-}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - buildrai-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  buildrai-network:
+    driver: bridge

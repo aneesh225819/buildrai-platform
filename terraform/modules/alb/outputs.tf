@@ -1,0 +1,19 @@
+output "alb_dns_name" {
+  value = aws_lb.main.dns_name
+}
+
+output "alb_arn" {
+  value = aws_lb.main.arn
+}
+
+output "target_group_arn" {
+  value = aws_lb_target_group.app.arn
+}
+
+output "security_group_id" {
+  value = aws_security_group.alb.id
+}
+
+output "https_listener_arn" {
+  value = aws_lb_listener.https.arn
+}
