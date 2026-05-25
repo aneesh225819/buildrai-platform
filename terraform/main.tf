@@ -54,7 +54,7 @@ module "s3" {
   domain_name        = var.domain_name
 }
 
-# ECS Cluster and Services
+# ECS Cluster and Services (with Redis configuration)
 module "ecs" {
   source = "./modules/ecs"
 
@@ -83,5 +83,33 @@ module "ecs" {
   s3_bucket_name = module.s3.bucket_name
   s3_bucket_arn  = module.s3.bucket_arn
 
+  # Redis configuration (added after Redis module creation)
+  redis_host = module.redis.redis_endpoint
+  redis_port = module.redis.redis_port
+
   depends_on = [module.s3]
+}
+
+# ElastiCache Redis (created after ECS to use its security group)
+module "redis" {
+  source = "./modules/redis"
+
+  project_name           = var.project_name
+  environment            = var.environment
+  vpc_id                 = module.vpc.vpc_id
+  private_subnets        = module.vpc.private_subnet_ids
+  ecs_security_group_id  = module.ecs.security_group_id
+  redis_node_type        = var.redis_node_type
+  enable_backup          = var.enable_redis_backup
+}
+
+# Output ECS security group ID for reference
+output "ecs_security_group_id" {
+  value = module.ecs.security_group_id
+}
+
+# Output Redis endpoint for reference
+output "redis_endpoint" {
+  value       = module.redis.redis_endpoint
+  description = "Redis endpoint address"
 }

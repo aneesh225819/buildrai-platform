@@ -150,7 +150,7 @@ resource "aws_ecs_task_definition" "app" {
       protocol      = "tcp"
     }]
 
-    environment = [
+    environment = concat([
       {
         name  = "NODE_ENV"
         value = "production"
@@ -167,36 +167,45 @@ resource "aws_ecs_task_definition" "app" {
         name  = "S3_BUCKET_NAME"
         value = var.s3_bucket_name
       }
-    ]
+    ], var.redis_host != "" ? [
+      {
+        name  = "REDIS_HOST"
+        value = var.redis_host
+      },
+      {
+        name  = "REDIS_PORT"
+        value = tostring(var.redis_port)
+      }
+    ] : [])
 
     secrets = [
       {
         name      = "MONGODB_URI"
-        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/mongodb-uri"
+        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/mongodb-uri-wT7NFT"
       },
       {
         name      = "ANTHROPIC_API_KEY"
-        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/anthropic-api-key"
+        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/anthropic-api-key-60MpQQ"
       },
       {
         name      = "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"
-        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/clerk-publishable-key"
+        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/clerk-publishable-key-gvTkWM"
       },
       {
         name      = "CLERK_SECRET_KEY"
-        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/clerk-secret-key"
+        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/clerk-secret-key-cJiVaT"
       },
       {
         name      = "TOKEN_ENCRYPTION_KEY"
-        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/token-encryption-key"
+        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/token-encryption-key-9YkjZK"
       },
       {
         name      = "GITHUB_CLIENT_ID"
-        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/github-client-id"
+        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/github-client-id-nKHXSt"
       },
       {
         name      = "GITHUB_CLIENT_SECRET"
-        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/github-client-secret"
+        valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:/buildrai/${var.environment}/github-client-secret-B8vT3a"
       }
     ]
 

@@ -92,3 +92,15 @@ variable "s3_bucket_name" {
 variable "s3_bucket_arn" {
   type = string
 }
+
+variable "redis_host" {
+  type        = string
+  default     = ""
+  description = "Redis endpoint host"
+}
+
+variable "redis_port" {
+  type        = number
+  default     = 6379
+  description = "Redis port"
+}

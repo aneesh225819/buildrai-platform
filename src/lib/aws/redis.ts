@@ -1,15 +1,15 @@
 import Redis from 'ioredis';
 
-const REDIS_HOST = process.env.REDIS_HOST!;
+const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 const REDIS_PORT = parseInt(process.env.REDIS_PORT || '6379');
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 const REDIS_TLS = process.env.REDIS_TLS === 'true';
 
-if (!REDIS_HOST) {
-  console.warn('⚠️  REDIS_HOST is not set in environment variables');
+if (!process.env.REDIS_HOST) {
+  console.warn('⚠️  REDIS_HOST is not set in environment variables - using localhost');
 }
 
-// Create Redis client for AWS ElastiCache
+// Create Redis client for AWS ElastiCache with lazy connection
 const redis = new Redis({
   host: REDIS_HOST,
   port: REDIS_PORT,
@@ -21,7 +21,8 @@ const redis = new Redis({
   },
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
-  lazyConnect: false,
+  lazyConnect: true, // Changed to true to prevent immediate connection attempt
+  enableOfflineQueue: true, // Queue commands when disconnected
 });
 
 // Event handlers

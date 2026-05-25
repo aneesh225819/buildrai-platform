@@ -92,3 +92,15 @@ variable "use_public_subnets" {
   type        = bool
   default     = false
 }
+
+variable "redis_node_type" {
+  description = "Redis node instance type"
+  type        = string
+  default     = "cache.t4g.micro"
+}
+
+variable "enable_redis_backup" {
+  description = "Enable Redis automated backups (adds cost)"
+  type        = bool
+  default     = false
+}
