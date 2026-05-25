@@ -1,17 +1,31 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY!;
+// Cached Anthropic client instance
+let anthropicClient: Anthropic | null = null;
 
-if (!ANTHROPIC_API_KEY) {
-  throw new Error(
-    'Please define the ANTHROPIC_API_KEY environment variable inside .env.local'
-  );
+/**
+ * Get or create Anthropic client (lazy initialization)
+ */
+function getAnthropicClient(): Anthropic {
+  if (anthropicClient) {
+    return anthropicClient;
+  }
+
+  // Check for API key at runtime, not at module load time
+  const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+
+  if (!ANTHROPIC_API_KEY) {
+    throw new Error(
+      'Please define the ANTHROPIC_API_KEY environment variable inside .env.local'
+    );
+  }
+
+  anthropicClient = new Anthropic({
+    apiKey: ANTHROPIC_API_KEY,
+  });
+
+  return anthropicClient;
 }
-
-// Initialize Anthropic client
-const anthropic = new Anthropic({
-  apiKey: ANTHROPIC_API_KEY,
-});
 
 // Model configuration
 export const MODELS = {
@@ -36,6 +50,7 @@ export async function createChatCompletion(
     system?: string;
   }
 ) {
+  const anthropic = getAnthropicClient();
   const response = await anthropic.messages.create({
     model: options?.model || DEFAULT_MODEL,
     max_tokens: options?.maxTokens || DEFAULT_MAX_TOKENS,
@@ -59,6 +74,7 @@ export async function* createStreamingChatCompletion(
     system?: string;
   }
 ) {
+  const anthropic = getAnthropicClient();
   const stream = await anthropic.messages.stream({
     model: options?.model || DEFAULT_MODEL,
     max_tokens: options?.maxTokens || DEFAULT_MAX_TOKENS,
@@ -138,4 +154,5 @@ export function selectModel(taskType: string): string {
   return MODELS.SONNET; // Default
 }
 
-export default anthropic;
+// Export the lazy client getter as default
+export default getAnthropicClient;
