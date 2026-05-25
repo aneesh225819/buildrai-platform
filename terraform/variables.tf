@@ -80,3 +80,15 @@ variable "max_capacity" {
   type        = number
   default     = 10
 }
+
+variable "enable_nat_gateway" {
+  description = "Enable NAT Gateway for private subnets (disable for dev to save ~$100/month)"
+  type        = bool
+  default     = true
+}
+
+variable "use_public_subnets" {
+  description = "Use public subnets for ECS tasks (dev only, less secure but saves NAT cost)"
+  type        = bool
+  default     = false
+}

@@ -232,9 +232,9 @@ resource "aws_ecs_service" "app" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = var.private_subnets
+    subnets          = var.use_public_subnets ? var.public_subnets : var.private_subnets
     security_groups  = [aws_security_group.ecs_tasks.id]
-    assign_public_ip = false
+    assign_public_ip = var.use_public_subnets ? true : false
   }
 
   load_balancer {
@@ -243,10 +243,8 @@ resource "aws_ecs_service" "app" {
     container_port   = 3000
   }
 
-  deployment_configuration {
-    maximum_percent         = 200
-    minimum_healthy_percent = 100
-  }
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 100
 
   deployment_circuit_breaker {
     enable   = true

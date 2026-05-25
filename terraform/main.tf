@@ -1,26 +1,6 @@
 # BuildRAI Infrastructure - Main Terraform Configuration
 # Deploy to AWS Mumbai (ap-south-1)
 
-terraform {
-  required_version = ">= 1.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-
-  # Backend configuration for state storage
-  backend "s3" {
-    bucket         = "buildrai-terraform-state"
-    key            = "production/terraform.tfstate"
-    region         = "ap-south-1"
-    encrypt        = true
-    dynamodb_table = "buildrai-terraform-locks"
-  }
-}
-
 provider "aws" {
   region = var.aws_region
 
@@ -37,9 +17,10 @@ provider "aws" {
 module "vpc" {
   source = "./modules/vpc"
 
-  project_name = var.project_name
-  environment  = var.environment
-  vpc_cidr     = var.vpc_cidr
+  project_name        = var.project_name
+  environment         = var.environment
+  vpc_cidr            = var.vpc_cidr
+  enable_nat_gateway  = var.enable_nat_gateway
 }
 
 # Application Load Balancer
@@ -71,7 +52,6 @@ module "s3" {
   project_name       = var.project_name
   environment        = var.environment
   domain_name        = var.domain_name
-  ecs_task_role_arn  = module.ecs.task_role_arn
 }
 
 # ECS Cluster and Services
@@ -84,6 +64,8 @@ module "ecs" {
   aws_account_id         = data.aws_caller_identity.current.account_id
   vpc_id                 = module.vpc.vpc_id
   private_subnets        = module.vpc.private_subnet_ids
+  public_subnets         = module.vpc.public_subnet_ids
+  use_public_subnets     = var.use_public_subnets
   target_group_arn       = module.alb.target_group_arn
   alb_security_group_id  = module.alb.security_group_id
   alb_listener_arn       = module.alb.https_listener_arn

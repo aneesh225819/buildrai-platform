@@ -42,5 +42,5 @@ output "public_subnet_ids" {
 
 output "ecr_repository_url" {
   description = "URL of the ECR repository"
-  value       = module.ecs.ecr_repository_url
+  value       = module.ecr.repository_url
 }

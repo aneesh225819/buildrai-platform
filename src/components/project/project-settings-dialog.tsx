@@ -173,7 +173,7 @@ export function ProjectSettingsDialog({
               <Select
                 value={formData.language}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, language: value })
+                  value && setFormData({ ...formData, language: value })
                 }
               >
                 <SelectTrigger id="language">
@@ -195,7 +195,7 @@ export function ProjectSettingsDialog({
               <Select
                 value={formData.framework}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, framework: value })
+                  value && setFormData({ ...formData, framework: value })
                 }
               >
                 <SelectTrigger id="framework">
@@ -219,7 +219,7 @@ export function ProjectSettingsDialog({
               <Select
                 value={formData.packageManager}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, packageManager: value })
+                  value && setFormData({ ...formData, packageManager: value })
                 }
               >
                 <SelectTrigger id="packageManager">
@@ -239,7 +239,7 @@ export function ProjectSettingsDialog({
               <Select
                 value={formData.styling}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, styling: value })
+                  value && setFormData({ ...formData, styling: value })
                 }
               >
                 <SelectTrigger id="styling">

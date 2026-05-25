@@ -22,6 +22,18 @@ variable "private_subnets" {
   type = list(string)
 }
 
+variable "public_subnets" {
+  type        = list(string)
+  default     = []
+  description = "Public subnets for dev/micro environments without NAT Gateway"
+}
+
+variable "use_public_subnets" {
+  type        = bool
+  default     = false
+  description = "Use public subnets for ECS tasks (dev only, saves NAT Gateway cost)"
+}
+
 variable "target_group_arn" {
   type = string
 }

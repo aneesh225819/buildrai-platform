@@ -96,8 +96,8 @@ export class GitHubService {
       cloneUrl: repo.clone_url,
       sshUrl: repo.ssh_url,
       defaultBranch: repo.default_branch,
-      createdAt: new Date(repo.created_at),
-      updatedAt: new Date(repo.updated_at),
+      createdAt: new Date(repo.created_at || Date.now()),
+      updatedAt: new Date(repo.updated_at || Date.now()),
     }));
   }
 

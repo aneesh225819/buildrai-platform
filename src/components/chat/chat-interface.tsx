@@ -240,7 +240,7 @@ export function ChatInterface({
             <span className="text-xs font-medium text-muted-foreground">
               AI Model
             </span>
-            <Select value={selectedModel} onValueChange={setSelectedModel}>
+            <Select value={selectedModel} onValueChange={(value) => value && setSelectedModel(value)}>
               <SelectTrigger className="h-8 w-[200px] text-xs">
                 <SelectValue />
               </SelectTrigger>

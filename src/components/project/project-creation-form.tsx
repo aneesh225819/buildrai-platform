@@ -432,9 +432,11 @@ export function ProjectCreationForm() {
                         <FormLabel>Select Repository</FormLabel>
                         <Select
                           onValueChange={(value) => {
-                            field.onChange(value);
-                            const repo = repositories.find(r => r.value === value);
-                            handleRepositoryChange(value, repo?.owner);
+                            if (value) {
+                              field.onChange(value);
+                              const repo = repositories.find(r => r.value === value);
+                              handleRepositoryChange(value, repo?.owner);
+                            }
                           }}
                           value={field.value}
                         >

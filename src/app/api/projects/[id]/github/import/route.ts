@@ -12,8 +12,12 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  let userId: string | null = null;
+  let projectId: string | undefined;
+
   try {
-    const { userId } = await auth();
+    const authResult = await auth();
+    userId = authResult.userId;
 
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -21,7 +25,8 @@ export async function POST(
 
     await connectDB();
 
-    const { id: projectId } = await params;
+    const resolvedParams = await params;
+    projectId = resolvedParams.id;
     const body = await req.json();
 
     const {
@@ -180,9 +185,11 @@ export async function POST(
     secureError('Error importing repository', error);
 
     // Audit log for failed import
-    auditLog(userId, 'GITHUB_IMPORT_FAILED', `project:${projectId}`, {
-      error: error.message,
-    });
+    if (userId) {
+      auditLog(userId, 'GITHUB_IMPORT_FAILED', `project:${projectId}`, {
+        error: error.message,
+      });
+    }
 
     return NextResponse.json(
       {

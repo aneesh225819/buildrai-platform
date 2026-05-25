@@ -48,6 +48,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "files" {
     id     = "delete-old-versions"
     status = "Enabled"
 
+    filter {}
+
     noncurrent_version_expiration {
       noncurrent_days = 30
     }
@@ -56,6 +58,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "files" {
   rule {
     id     = "transition-old-files"
     status = "Enabled"
+
+    filter {}
 
     transition {
       days          = 90
@@ -85,37 +89,5 @@ resource "aws_s3_bucket_cors_configuration" "files" {
   }
 }
 
-# Bucket Policy for CloudFront (optional - for future CDN)
-resource "aws_s3_bucket_policy" "files" {
-  bucket = aws_s3_bucket.files.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "AllowECSTaskAccess"
-        Effect = "Allow"
-        Principal = {
-          AWS = var.ecs_task_role_arn
-        }
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject"
-        ]
-        Resource = "${aws_s3_bucket.files.arn}/*"
-      },
-      {
-        Sid    = "AllowECSListBucket"
-        Effect = "Allow"
-        Principal = {
-          AWS = var.ecs_task_role_arn
-        }
-        Action = [
-          "s3:ListBucket"
-        ]
-        Resource = aws_s3_bucket.files.arn
-      }
-    ]
-  })
-}
+# Bucket policy removed to avoid circular dependency
+# ECS task role has IAM permissions instead (see modules/ecs/main.tf)

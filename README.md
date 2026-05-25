@@ -1,240 +1,165 @@
-# BuildrAI Platform
+# BuildRAI Platform
 
-AI-Powered Development Acceleration Platform - Automate your entire software development lifecycle from requirements gathering through code generation, quality assurance, security scanning, and cloud deployment.
+AI-powered code generation platform with OAuth integration and AWS ECS deployment.
 
-## 🚀 Features
+## Repository
 
-### Phase 1 (Current Development)
-- ✅ AI Requirements Gathering
-- ✅ Multi-Agent Code Generation
-- ✅ Project Management
-- ✅ Code Editor (Monaco)
-- ✅ Real-time Chat Interface
-- ✅ Version Control
-- ✅ Project Export (ZIP, GitHub)
+**GitHub**: https://github.com/aneesh225819/buildrai-platform
 
-### Future Phases
-- 📋 Phase 2: Code Quality Management (Static Analysis, Testing, Code Review)
-- 🔒 Phase 3: Security & Vulnerability Management (SAST, Dependency Scanning, Secret Detection)
-- ☁️  Phase 4: Cloud Deployment (AWS, Azure, GCP, Infrastructure as Code)
+## What's Included
 
-## 🛠️ Tech Stack
+### Application Features
+- Next.js 16.2.6 with App Router and TypeScript
+- OAuth integration (GitHub, Bitbucket, Azure Repos)
+- Data source integration for project creation
+- AI-powered code generation using Claude
+- MongoDB database integration
+- Secure token encryption (AES-256-GCM)
 
-### Frontend
-- **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript
-- **Styling:** TailwindCSS + shadcn/ui
-- **State:** Zustand + React Query
-- **Editor:** Monaco Editor
-- **Forms:** React Hook Form + Zod
+### Deployment Infrastructure
+- Docker multi-stage build for production
+- Complete Terraform infrastructure for AWS ECS
+- VPC with public/private subnets across 2 AZs
+- Application Load Balancer with HTTPS
+- ECS Fargate cluster with auto-scaling (2-10 tasks)
+- S3 bucket for file storage
+- ECR repository with image scanning
+- GitHub Actions CI/CD pipeline
+- CloudWatch logging and monitoring
 
-### Backend
-- **Runtime:** Node.js 20.x
-- **API:** Next.js API Routes
-- **Database:** MongoDB Atlas (Mongoose)
-- **Cache:** AWS ElastiCache (Redis/ioredis)
-- **Queue:** AWS SQS
-- **Storage:** AWS S3
+### Documentation
+- `DEPLOYMENT.md` - Complete deployment guide
+- `MICROSERVICES_ARCHITECTURE.md` - Architecture documentation
+- `OAUTH_SETUP.md` - OAuth configuration guide
 
-### AI/ML
-- **Provider:** Anthropic Claude API
-- **Models:** Claude 3.5 Sonnet, Haiku, Opus
-- **Framework:** LangGraph (multi-agent orchestration)
+## Architecture
 
-### Authentication
-- **Provider:** Clerk
+**Current**: Monolith deployed on AWS ECS Fargate
+**Future**: Microservices architecture (8 services planned)
 
-## 📁 Project Structure
+## Tech Stack
 
-```
-buildrai-platform/
-├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── api/               # API routes
-│   │   │   ├── auth/         # Authentication endpoints
-│   │   │   ├── projects/     # Project management
-│   │   │   ├── chat/         # Chat/AI endpoints
-│   │   │   ├── generate/     # Code generation
-│   │   │   ├── quality/      # Quality checks (Phase 2)
-│   │   │   ├── security/     # Security scanning (Phase 3)
-│   │   │   └── deploy/       # Deployment (Phase 4)
-│   │   ├── (auth)/           # Auth pages (sign-in, sign-up)
-│   │   ├── dashboard/        # Main dashboard
-│   │   ├── projects/         # Project pages
-│   │   └── layout.tsx        # Root layout
-│   ├── components/            # React components
-│   │   ├── ui/               # shadcn/ui components
-│   │   ├── dashboard/        # Dashboard components
-│   │   ├── editor/           # Code editor components
-│   │   ├── chat/             # Chat interface
-│   │   ├── project/          # Project components
-│   │   └── auth/             # Auth components
-│   ├── lib/                   # Core libraries
-│   │   ├── db/               # Database
-│   │   │   ├── mongodb.ts    # MongoDB connection
-│   │   │   └── models/       # Mongoose models
-│   │   ├── aws/              # AWS services
-│   │   │   ├── s3.ts         # S3 file storage
-│   │   │   ├── sqs.ts        # SQS job queue
-│   │   │   └── redis.ts      # ElastiCache Redis
-│   │   ├── ai/               # AI/LLM
-│   │   │   ├── anthropic.ts  # Claude API client
-│   │   │   └── agents/       # AI agents
-│   │   └── utils/            # Utility functions
-│   └── types/                 # TypeScript types
-│       └── index.ts          # Shared types
-├── public/                    # Static files
-├── .env.local.example        # Environment variables template
-└── package.json
-```
+- **Framework**: Next.js 16.2.6
+- **Language**: TypeScript
+- **Database**: MongoDB
+- **AI**: Anthropic Claude API
+- **Cloud**: AWS (ECS, ALB, S3, ECR, VPC)
+- **IaC**: Terraform
+- **CI/CD**: GitHub Actions
+- **Containerization**: Docker
 
-## 🔧 Setup Instructions
+## Quick Start - Local Development
 
-### 1. Prerequisites
-- Node.js 20.x or later
-- npm/yarn/pnpm
-- MongoDB Atlas account
-- AWS account (for S3, SQS, ElastiCache)
-- Clerk account
-- Anthropic API key
-
-### 2. Environment Variables
-
-Copy `.env.local.example` to `.env.local` and fill in your credentials:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Required environment variables:
-- `MONGODB_URI` - MongoDB Atlas connection string
-- `ANTHROPIC_API_KEY` - Anthropic Claude API key
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk publishable key
-- `CLERK_SECRET_KEY` - Clerk secret key
-- `AWS_ACCESS_KEY_ID` - AWS access key
-- `AWS_SECRET_ACCESS_KEY` - AWS secret key
-- `AWS_S3_BUCKET_NAME` - S3 bucket name
-- `AWS_SQS_QUEUE_URL` - SQS queue URL
-- `REDIS_HOST` - ElastiCache Redis endpoint
-
-### 3. Install Dependencies
-
+1. Install dependencies:
 ```bash
 npm install
 ```
 
-### 4. Run Development Server
+2. Configure environment variables:
+```bash
+cp .env.local.example .env.local
+# Edit .env.local with your credentials
+```
 
+3. Start development server:
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Access at http://localhost:3000
 
-## 📦 Available Scripts
+## Deployment to AWS ECS (Mumbai Region)
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript compiler check
+Complete guide in `DEPLOYMENT.md`. Quick summary:
 
-## 🗄️ Database Models
+### Prerequisites
+- AWS CLI with `aneesh-personal` profile
+- Terraform v1.0+
+- Docker
+- Domain with DNS access
+- MongoDB (Atlas or DocumentDB)
 
-### User
-- Profile information
-- Subscription plan (free, pro, business, enterprise)
-- Usage tracking
-- API keys
-- Cloud account connections
+### Deployment Commands
 
-### Project
-- Project metadata
-- Settings (template, language, framework)
-- Requirements (raw, structured, summary)
-- Files (path, content, metadata)
-- Statistics (files, lines, size)
+```bash
+# 1. Create Terraform state bucket
+aws s3 mb s3://buildrai-terraform-state --region ap-south-1 --profile aneesh-personal
 
-### ChatSession
-- Chat history
-- Messages (role, content, metadata)
-- Token usage tracking
-- Cost calculation
+# 2. Deploy infrastructure
+cd terraform
+terraform init
+terraform apply -var-file=environments/prod/terraform.tfvars
 
-## 🤖 AI Agents
+# 3. Build and push Docker image
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text --profile aneesh-personal)
+aws ecr get-login-password --region ap-south-1 --profile aneesh-personal | \
+  docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com
+docker build -t buildrai .
+docker tag buildrai:latest $AWS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/buildrai-prod:latest
+docker push $AWS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/buildrai-prod:latest
 
-### Current (Phase 1)
-- **Requirements Agent:** Extracts and structures project requirements
-- **Planning Agent:** Creates development plan and task breakdown
-- **Architecture Agent:** Designs system architecture
-- **Code Generation Agent:** Generates source code files
-- **Review Agent:** Reviews and improves generated code
+# 4. Deploy to ECS
+aws ecs update-service \
+  --cluster buildrai-prod-cluster \
+  --service buildrai-prod-service \
+  --force-new-deployment \
+  --region ap-south-1 \
+  --profile aneesh-personal
+```
 
-### Future Phases
-- **Quality Agent:** Static analysis and testing (Phase 2)
-- **Security Agent:** Vulnerability scanning and fixes (Phase 3)
-- **Deployment Agent:** Cloud infrastructure and deployment (Phase 4)
+## CI/CD
 
-## 🔐 Security
+Automatic deployment on push to `main` branch.
 
-- All sensitive data encrypted at rest and in transit
-- Environment variables for secrets (never committed)
-- AWS Secrets Manager integration available
-- Authentication via Clerk (OAuth, MFA support)
-- Rate limiting on API endpoints
-- Input validation with Zod schemas
+Setup GitHub Secrets:
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
 
-## 📊 Monitoring & Logging
+## Monitoring
 
-- Error tracking: Sentry (to be configured)
-- Performance monitoring: DataDog (to be configured)
-- Analytics: PostHog (to be configured)
-- Logging: Winston + CloudWatch Logs
+```bash
+# View logs
+aws logs tail /ecs/buildrai-prod --follow --region ap-south-1 --profile aneesh-personal
 
-## 🚧 Development Roadmap
+# Health check
+curl https://buildrai.com/api/health
+```
 
-- [x] **Week 1-2:** Project setup, infrastructure, authentication ✅
-- [ ] **Week 3-4:** Project management system
-- [ ] **Week 5-6:** AI requirements gathering agent
-- [ ] **Week 7-8:** Code generation multi-agent system
-- [ ] **Week 9-10:** Code editor and live preview
-- [ ] **Week 11-12:** Export functionality and MVP launch
+## Cost Estimate
 
-## 📝 Current Progress
+**~$700-900/month** for production
+- ECS Fargate: $400-500
+- ALB: $20
+- NAT Gateway: $100
+- S3: $10
+- MongoDB Atlas M10: $57
+- Data transfer: $100
 
-### ✅ Completed
-- Next.js 14 project initialization
-- TypeScript & ESLint configuration
-- TailwindCSS & shadcn/ui setup
-- MongoDB connection & schemas
-- AWS services integration (S3, SQS, ElastiCache)
-- Anthropic Claude API client
-- Clerk authentication setup
-- Project folder structure
+## Security
 
-### 🚧 In Progress
-- AI agent system with LangGraph
-- Chat interface
-- Code generation agents
+- HTTPS with TLS 1.3
+- Secrets in AWS Secrets Manager
+- Private subnets for tasks
+- Security groups
+- Non-root container
+- AES-256-GCM token encryption
 
-### 📋 Next Steps
-- Create API endpoints
-- Build dashboard UI
-- Implement Monaco Editor integration
-- Develop requirements gathering agent
+## Future: Microservices
 
-## 📄 License
+When ready to scale:
+1. Auth Service
+2. Project Service
+3. Code Generation Service
+4. Integration Service
+5. File Service
+6. Analytics Service
+7. WebSocket Service
+8. API Gateway
 
-TBD
-
-## 🤝 Contributing
-
-TBD
-
-## 📞 Support
-
-For support, email support@buildrai.io
+See `MICROSERVICES_ARCHITECTURE.md` for details.
 
 ---
 
-**Built with ❤️ using Claude AI**
+**Repository**: https://github.com/aneesh225819/buildrai-platform
+
+Ready for deployment to AWS ECS Mumbai (ap-south-1)
