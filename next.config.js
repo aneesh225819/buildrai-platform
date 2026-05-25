@@ -19,7 +19,10 @@ const nextConfig = {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
 
-  // Webpack configuration
+  // Turbopack configuration (Next.js 16 default)
+  turbopack: {},
+
+  // Webpack configuration (fallback for webpack builds)
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // Don't resolve 'fs' module on the client to prevent errors
